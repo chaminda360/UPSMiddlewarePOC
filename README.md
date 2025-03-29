@@ -7,6 +7,8 @@ A .NET Core middleware service to integrate UPS APIs with legacy Classic ASP sys
 - This middleware handles UPS authentication, API versioning, and JSON/XML conversion
 - Legacy systems send simple requests to this middleware to get shipping rates
 
+![UPS Shipping API Middleware](assets/UPS_Shipping_API_Middleware.png)
+
 ## Features
 - OAuth 2.0 token management for UPS API
 - XML-to-JSON conversion for legacy compatibility
@@ -21,16 +23,25 @@ A .NET Core middleware service to integrate UPS APIs with legacy Classic ASP sys
 ## Project Structure
 ```
 UPSMiddlewarePOC/
-├── UPSService/                # .NET Core Middleware
-│   ├── Controllers/
+├── UPSMiddlewarePOC.sln         # Solution file
+├── UPSService/                  # .NET Core Middleware
+│   ├── Controllers/             # API Controllers
 │   │   └── UPSController.cs
-│   ├── Services/
+│   ├── Middleware/              # Custom Middleware
+│   │   ├── ApiKeyMiddleware.cs
+│   │   └── ApiKeyMiddlewareExtensions.cs
+│   ├── Models/                  # Data Models
+│   │   ├── RateRequest.cs
+│   │   └── UPSAuthResponse.cs
+│   ├── Services/                # Service Layer
 │   │   └── UPSApiService.cs
-│   ├── appsettings.json
-│   └── UPSService.csproj
-├── ClassicASPExample/         # Sample Legacy Integration
+│   ├── appsettings.json         # Configuration
+│   ├── appsettings.Development.json # Development Configuration
+│   ├── Program.cs               # Application Entry Point
+│   └── UPSService.csproj        # Project File
+├── ClassicASPExample/           # Sample Legacy Integration
 │   └── GetShippingRates.asp
-└── README.md
+└── README.md                    # Documentation
 ```
 
 ## Setup
