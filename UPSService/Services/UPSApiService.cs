@@ -1,4 +1,3 @@
-// Services/UPSApiService.cs
 using System.Net.Http.Headers;
 using System.Xml.Linq;
 using System.Text;
@@ -6,16 +5,38 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
+/// <summary>
+/// Interface for UPS API Service.
+/// Provides methods to interact with UPS API for fetching shipping rates.
+/// </summary>
 public interface IUPSApiService {
+    /// <summary>
+    /// Fetches shipping rates from UPS API based on the provided parameters.
+    /// </summary>
+    /// <param name="fromZip">The origin postal code.</param>
+    /// <param name="toZip">The destination postal code.</param>
+    /// <param name="weight">The weight of the package in pounds.</param>
+    /// <returns>A JSON string containing the shipping rates.</returns>
     Task<string> GetShippingRatesAsync(string fromZip, string toZip, decimal weight);
 }
 
+/// <summary>
+/// Implementation of the UPS API Service.
+/// Handles authentication and communication with the UPS API.
+/// </summary>
 public class UPSApiService : IUPSApiService {
     private readonly IHttpClientFactory _clientFactory;
     private readonly IConfiguration _config;
     private readonly ILogger<UPSApiService> _logger;
     private readonly IMemoryCache _cache;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UPSApiService"/> class.
+    /// </summary>
+    /// <param name="clientFactory">The HTTP client factory for creating HTTP clients.</param>
+    /// <param name="config">The configuration for accessing app settings.</param>
+    /// <param name="logger">The logger for logging information and errors.</param>
+    /// <param name="cache">The memory cache for caching data.</param>
     public UPSApiService(IHttpClientFactory clientFactory, IConfiguration config, ILogger<UPSApiService> logger, IMemoryCache cache) {
         _clientFactory = clientFactory;
         _config = config;
@@ -23,6 +44,10 @@ public class UPSApiService : IUPSApiService {
         _cache = cache;
     }
 
+    /// <summary>
+    /// Retrieves or refreshes the UPS access token.
+    /// </summary>
+    /// <returns>The UPS access token as a string.</returns>
     private async Task<string> GetOrRefreshTokenAsync() {
         if (_cache.TryGetValue("UPSAccessToken", out string cachedToken)) {
             return cachedToken;
@@ -55,6 +80,13 @@ public class UPSApiService : IUPSApiService {
         }
     }
 
+    /// <summary>
+    /// Fetches shipping rates from UPS API.
+    /// </summary>
+    /// <param name="fromZip">The origin postal code.</param>
+    /// <param name="toZip">The destination postal code.</param>
+    /// <param name="weight">The weight of the package in pounds.</param>
+    /// <returns>A JSON string containing the shipping rates.</returns>
     public async Task<string> GetShippingRatesAsync(string fromZip, string toZip, decimal weight) {
         try {
             var token = await GetOrRefreshTokenAsync();
