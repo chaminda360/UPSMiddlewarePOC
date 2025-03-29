@@ -46,11 +46,11 @@ public class UPSApiService : IUPSApiService {
 
     /// <summary>
     /// Retrieves or refreshes the UPS access token.
+    /// Implements OAuth 2.0 token management for UPS API.
     /// </summary>
-    /// <returns>The UPS access token as a string.</returns>
     private async Task<string> GetOrRefreshTokenAsync() {
         if (_cache.TryGetValue("UPSAccessToken", out string cachedToken)) {
-            return cachedToken;
+            return cachedToken; // Caching: Retrieves token from memory cache if available.
         }
 
         try {
@@ -67,26 +67,23 @@ public class UPSApiService : IUPSApiService {
                 new FormUrlEncodedContent(new Dictionary<string, string> { { "grant_type", "client_credentials" } }));
 
             if (!response.IsSuccessStatusCode) {
-                _logger.LogError("UPS Auth Failed: {Error}", await response.Content.ReadAsStringAsync());
+                _logger.LogError("UPS Auth Failed: {Error}", await response.Content.ReadAsStringAsync()); // Error logging: Logs authentication failure.
                 throw new Exception("UPS Auth Failed");
             }
 
             var tokenData = await response.Content.ReadFromJsonAsync<UPSAuthResponse>();
-            _cache.Set("UPSAccessToken", tokenData.AccessToken, TimeSpan.FromSeconds(tokenData.ExpiresIn - 300));
+            _cache.Set("UPSAccessToken", tokenData.AccessToken, TimeSpan.FromSeconds(tokenData.ExpiresIn - 300)); // Caching: Stores token in memory cache.
             return tokenData.AccessToken;
         } catch (Exception ex) {
-            _logger.LogError(ex, "Error while fetching UPS access token");
+            _logger.LogError(ex, "Error while fetching UPS access token"); // Error logging: Logs exceptions during token retrieval.
             throw;
         }
     }
 
     /// <summary>
     /// Fetches shipping rates from UPS API.
+    /// Converts XML response to JSON for legacy compatibility.
     /// </summary>
-    /// <param name="fromZip">The origin postal code.</param>
-    /// <param name="toZip">The destination postal code.</param>
-    /// <param name="weight">The weight of the package in pounds.</param>
-    /// <returns>A JSON string containing the shipping rates.</returns>
     public async Task<string> GetShippingRatesAsync(string fromZip, string toZip, decimal weight) {
         try {
             var token = await GetOrRefreshTokenAsync();
@@ -120,15 +117,15 @@ public class UPSApiService : IUPSApiService {
                 new StringContent(requestXml.ToString(), Encoding.UTF8, "application/xml"));
 
             if (!response.IsSuccessStatusCode) {
-                _logger.LogError("UPS API Error: {StatusCode}", response.StatusCode);
+                _logger.LogError("UPS API Error: {StatusCode}", response.StatusCode); // Error logging: Logs API errors.
                 throw new Exception("UPS API Error");
             }
 
             var responseXml = await response.Content.ReadAsStringAsync();
-            var responseJson = JsonSerializer.Serialize(XDocument.Parse(responseXml).Root);
+            var responseJson = JsonSerializer.Serialize(XDocument.Parse(responseXml).Root); // XML-to-JSON conversion: Converts XML response to JSON.
             return responseJson;
         } catch (Exception ex) {
-            _logger.LogError(ex, "Error while fetching shipping rates");
+            _logger.LogError(ex, "Error while fetching shipping rates"); // Error logging: Logs exceptions during rate fetching.
             throw;
         }
     }
