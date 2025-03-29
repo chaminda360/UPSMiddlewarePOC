@@ -1,0 +1,67 @@
+# Ignore build output
+bin/
+obj/
+
+# Ignore user-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Ignore logs
+*.log
+
+# Ignore IDE settings
+.vscode/
+.idea/
+
+# Ignore temporary files
+*.tmp
+*.temp
+
+# Ignore compiled files
+*.dll
+*.exe
+*.pdb
+*.cache
+*.ilk
+*.idb
+*.lib
+*.obj
+*.o
+*.so
+*.class
+*.pyc
+*.pyo
+*.out
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore environment files
+.env
+.env.*
+
+# Ignore package manager files
+node_modules/
+package-lock.json
+yarn.lock
+
+# Ignore coverage reports
+coverage/
+*.lcov
+
+# Ignore generated files
+*.generated.cs
+
+# Ignore NuGet packages
+*.nupkg
+*.snupkg
+
+# Ignore Rider settings
+.idea/
+*.iml
+
+# Ignore Visual Studio Code settings
+.vscode/
