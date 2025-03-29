@@ -7,6 +7,8 @@ A .NET Core middleware service to integrate UPS APIs with legacy Classic ASP sys
 - This middleware handles UPS authentication, API versioning, and JSON/XML conversion
 - Legacy systems send simple requests to this middleware to get shipping rates
 
+## Architecture Diagram
+
 ![UPS Shipping API Middleware](assets/UPS_Shipping_API_Middleware.png)
 
 ## Features
