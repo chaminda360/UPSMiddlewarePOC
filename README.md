@@ -14,6 +14,7 @@ A .NET Core middleware service to integrate UPS APIs with legacy Classic ASP sys
 - XML-to-JSON conversion for legacy compatibility
 - API key security layer
 - Error logging
+- Caching
 
 ## Prerequisites
 - .NET 6 SDK
